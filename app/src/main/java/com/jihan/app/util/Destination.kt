@@ -13,6 +13,10 @@ sealed interface Destination {
 
 
     @Serializable
-    data class StreamPlayer(val channelJson: String):Destination
+    data class StreamPlayer(
+        val url:String,
+        val image:String,
+        val title:String,
+    ):Destination
 
 }

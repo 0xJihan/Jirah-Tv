@@ -1,5 +1,6 @@
 package com.jihan.app.screens
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -20,12 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.jihan.app.local.Channel
 import com.jihan.app.screens.components.ChannelItem
 import com.jihan.app.util.Constants.TAG
+import com.jihan.app.util.Destination
 import com.jihan.app.util.toTitleCase
 import com.jihan.app.viewmodel.CategoryDetailViewmodel
 import com.jihan.app.viewmodel.ChannelViewmodel
@@ -47,7 +50,7 @@ fun CategoryDetailScreen(
     }
 
 
-    if (loading)
+     if (loading)
         CenterBox {
             CircularProgressIndicator()
             Text("Loading...")
@@ -72,8 +75,14 @@ fun CategoryDetailScreen(
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
 
-                items(channelList) {
-                      ChannelItem(Modifier.size(120.dp), it) { }
+                items(channelList, key = {it.id}) {
+                      ChannelItem(Modifier.size(120.dp), it) {channel ->
+                          navController.navigate(Destination.StreamPlayer(
+                              url = channel.url,
+                              title = channel.name,
+                              image = channel.image
+                          ))
+                      }
                 }
             }
 

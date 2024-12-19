@@ -1,5 +1,6 @@
 package com.jihan.app.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,8 +35,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.jihan.app.local.Channel
 import com.jihan.app.screens.components.ChannelItem
+import com.jihan.app.util.Constants.TAG
 import com.jihan.app.util.Destination
 import com.jihan.app.util.StateManager
+import com.jihan.app.util.getChannelsByCategory
 import com.jihan.app.util.toTitleCase
 import com.jihan.app.viewmodel.ChannelViewmodel
 import org.koin.compose.koinInject
@@ -67,10 +70,6 @@ fun HomeScreen(
 
         is StateManager.Success -> {
 
-            LaunchedEffect(Unit) {
-
-            }
-
             val categories by viewModel.totalCategories.collectAsStateWithLifecycle()
 
             val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -85,7 +84,7 @@ fun HomeScreen(
                         title = { Text("Jirah TV") },
                         scrollBehavior = scrollBehavior,
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Blue.copy(alpha = 4f)
+                            containerColor = Color(0x00686CD2)
                         )
                     )
                 }
@@ -94,17 +93,6 @@ fun HomeScreen(
                 Box(Modifier.padding(it)) {
 
 
-                    val testChannel = remember {
-                        Channel(
-                            1,
-                            "Test",
-                            "https://i.imgur.com/SUPQAok.png",
-                            "https://i.imgur.com/SUPQAok.png",
-                            "Test"
-                        )
-                    }
-                    val count = remember { 100 }
-                    // val channelList by viewModel.channelList.collectAsStateWithLifecycle()
 
 
                     LazyColumn(
@@ -112,7 +100,10 @@ fun HomeScreen(
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(categories){category->
+                        items(categories, key = {it}){category->
+
+                            val categoryList = remember { getChannelsByCategory(category,state.data) }
+
                             Row(
                                 Modifier
                                     .fillMaxWidth()
@@ -139,13 +130,18 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.background)
                             ) {
-                                items(count) {
+
+                                items(items = categoryList, key = {it.id}) {
 
                                     ChannelItem(
-                                        channel = testChannel,
+                                        channel = it,
                                         modifier = Modifier.size(120.dp)
-                                    ) {
-
+                                    ) {channel->
+                                        navController.navigate(Destination.StreamPlayer(
+                                            url = channel.url,
+                                            title = channel.name,
+                                            image = channel.image
+                                        ))
                                     }
                                 }
                             }

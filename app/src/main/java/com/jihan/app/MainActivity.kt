@@ -9,13 +9,14 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.media3.common.Player
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.jihan.app.screens.CategoryDetailScreen
 import com.jihan.app.screens.HomeScreen
-import com.jihan.app.screens.TestPlayer
+import com.jihan.app.screens.PlayerScreen
 import com.jihan.app.ui.theme.AppTheme
 import com.jihan.app.util.Constants.TAG
 import com.jihan.app.util.Destination
@@ -48,23 +49,18 @@ class MainActivity : ComponentActivity() {
 
         NavHost(navController, Destination.Home) {
 
-            composable<Destination.Home>(
-                exitTransition = {
-                    slideOutHorizontally { -it }
-                },
-                enterTransition = { slideInHorizontally { -it } }
-            ) { HomeScreen(viewmodel,navController) }
+            composable<Destination.Home>{ HomeScreen(viewmodel,navController) }
 
             composable<Destination.StreamPlayer> {
-                TestPlayer()
+                val route = it.toRoute<Destination.StreamPlayer>()
+               PlayerScreen(
+                   url = route.url,
+                   title = route.title,
+                   onBackPressed = navController::navigateUp
+               )
             }
 
-            composable<Destination.CategoryDetail>(
-                exitTransition = {
-                    slideOutHorizontally { it }
-                },
-                enterTransition = { slideInHorizontally { it } }
-            ) {
+            composable<Destination.CategoryDetail> {
                 val route = it.toRoute<Destination.CategoryDetail>()
 
                 CategoryDetailScreen(route.category,navController)
