@@ -24,10 +24,10 @@ Jirah-TV is a modern IPTV streaming application built with Jetpack Compose, Room
 - **Asynchronous Tasks**: Kotlin Coroutines and Flow
 
 ## Screenshots
-![HOme Screen](home.img)
-![Category Screen](viewall.img)
-![Player Screeen](player1.img)
-![Player Screen](player2.img)
+![HOme Screen](home.png)
+![Category Screen](viewall.png)
+![Player Screeen](player1.png)
+![Player Screen](player2.png)
 
 
 ## Getting Started
